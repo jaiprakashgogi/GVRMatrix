@@ -20,7 +20,7 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 	private float[] mVMatrix = new float[16];
 	private float[] mVPMatrix = new float[16];
 	private float pos = 0.f;
-	private Droplet drop;
+	private Rain rain;
 	int CHAR_HEIGHT = 28;
 	int CHAR_PAD = 4;
 
@@ -43,7 +43,7 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 		// enable texture + alpha blending
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		drop = new Droplet(this, glText);
+		rain = new Rain(this, glText);
 	}
 
 	public void onDrawFrame(GL10 unused) {
@@ -58,12 +58,7 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 		// TEST: render the entire font texture
 		glText.drawTexture( width/2, height/2, mVPMatrix);            // Draw the Entire Texture	
 		glText.begin( 0.0f, 1.0f, 0.0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color BLUE)
-		drop.update();
-		glText.draw( "M", -width/2,  pos);        // Draw Test String
-		pos = pos + glText.fontHeight;
-		if(pos > height/2){
-			pos = -height/2;
-		}
+		rain.update();
 		glText.end();                                   // End Text Rendering
 	}
 

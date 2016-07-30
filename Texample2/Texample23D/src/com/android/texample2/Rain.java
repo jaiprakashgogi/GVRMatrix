@@ -1,0 +1,58 @@
+package com.android.texample2;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+public class Rain implements DropletCbListener{
+	// Rain in the manager of the droplets
+	ArrayList<Droplet> mDroplets;
+	private int delay, curr_delay = 0;
+	private Texample2Renderer texample2Renderer;
+	private GLText glText;
+	private int MAX_DELAY = 50;
+	private Random rand;
+	private boolean isDelayStart = false;
+
+	public Rain(Texample2Renderer _texample2Renderer, GLText _glText) {
+		// TODO Auto-generated constructor stub
+		texample2Renderer = _texample2Renderer;
+		glText = _glText;
+		mDroplets = new ArrayList<Droplet>();
+		rand = new Random();
+		delay = rand.nextInt(MAX_DELAY) + 1;
+		Droplet mDrop = new Droplet(texample2Renderer, glText);
+		mDrop.setDropletCbListener(this);
+		mDroplets.add(mDrop);
+	}
+
+	public void update() {
+		// TODO Auto-generated method stub
+		if(curr_delay++ > delay && isDelayStart){
+			Droplet mDrop = new Droplet(texample2Renderer, glText);
+			mDrop.setDropletCbListener(this);
+			mDroplets.add(mDrop);
+			isDelayStart = false;
+			curr_delay = 0;
+		}
+		for(int i=0; i< mDroplets.size(); i++) {
+			mDroplets.get(i).update();
+		}
+	}
+	
+
+	@Override
+	public void onDropletDone(Droplet drop) {
+		// TODO Auto-generated method stub
+		mDroplets.remove(drop);
+		isDelayStart = true;
+	}
+
+	@Override
+	public void onTailDelete() {
+		// TODO Auto-generated method stub
+		isDelayStart = true;
+	}
+	
+	
+
+}
