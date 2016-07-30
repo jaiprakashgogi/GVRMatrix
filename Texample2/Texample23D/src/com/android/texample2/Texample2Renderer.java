@@ -14,12 +14,15 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 	private GLText glText;                             // A GLText Instance
 	private Context context;                           // Context (from Activity)
 
-	private int width = 100;                           // Updated to the Current Width + Height in onSurfaceChanged()
-	private int height = 100;
+	int width = 100;                           // Updated to the Current Width + Height in onSurfaceChanged()
+	int height = 100;
 	private float[] mProjMatrix = new float[16];
 	private float[] mVMatrix = new float[16];
 	private float[] mVPMatrix = new float[16];
 	private float pos = 0.f;
+	private Droplet drop;
+	int CHAR_HEIGHT = 28;
+	int CHAR_PAD = 4;
 
 	public Texample2Renderer(Context context)  {
 		super();
@@ -35,11 +38,12 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 
 		// Load the font from file (set size + padding), creates the texture
 		// NOTE: after a successful call to this the font is ready for rendering!
-		glText.load( "Roboto-Regular.ttf", 28, 4, 4 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
+		glText.load( "Roboto-Regular.ttf", CHAR_HEIGHT, CHAR_PAD, CHAR_PAD );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
 
 		// enable texture + alpha blending
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		drop = new Droplet(this, glText);
 	}
 
 	public void onDrawFrame(GL10 unused) {
@@ -50,25 +54,16 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 	
 		Matrix.multiplyMM(mVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
 		
+		
 		// TEST: render the entire font texture
-		glText.drawTexture( width/2, height/2, mVPMatrix);            // Draw the Entire Texture
-		
-		// TEST: render some strings with the font
-//		glText.begin( 0f, 1.0f, 0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color WHITE)
-//		glText.drawC("Test String 3D!", 0f, 0f, 0f, 0, -30, 0);
-		//glText.drawCX("Test String 3D!", 0f, 0f);
-//		glText.drawC( "Test String :)", 0, 0, 0 );          // Draw Test String
-//		glText.draw( "Diagonal 1", 40, 40, 40);                // Draw Test String
-//		glText.draw( "Column 1", 100, 100, 90);              // Draw Test String
-//		glText.end();                                   // End Text Rendering
-		
+		glText.drawTexture( width/2, height/2, mVPMatrix);            // Draw the Entire Texture	
 		glText.begin( 0.0f, 1.0f, 0.0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color BLUE)
-		glText.draw( "More Lines...", -width/2,  pos);        // Draw Test String
+		drop.update();
+		glText.draw( "M", -width/2,  pos);        // Draw Test String
 		pos = pos + glText.fontHeight;
 		if(pos > height/2){
 			pos = -height/2;
 		}
-//		glText.draw( "The End.", 50, 200 + glText.getCharHeight(), 180);  // Draw Test String
 		glText.end();                                   // End Text Rendering
 	}
 
