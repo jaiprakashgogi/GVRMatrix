@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jsr223">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../android/GearVRf/GVRf/Framework/framework/src/main/libs/jsr223.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
