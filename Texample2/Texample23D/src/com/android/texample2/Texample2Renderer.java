@@ -19,6 +19,7 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 	private float[] mProjMatrix = new float[16];
 	private float[] mVMatrix = new float[16];
 	private float[] mVPMatrix = new float[16];
+	private float pos = 0.f;
 
 	public Texample2Renderer(Context context)  {
 		super();
@@ -62,7 +63,11 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 //		glText.end();                                   // End Text Rendering
 		
 		glText.begin( 0.0f, 1.0f, 0.0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color BLUE)
-		glText.draw( "More Lines...", 50, 200 );        // Draw Test String
+		glText.draw( "More Lines...", -width/2,  pos);        // Draw Test String
+		pos = pos + glText.fontHeight;
+		if(pos > height/2){
+			pos = -height/2;
+		}
 //		glText.draw( "The End.", 50, 200 + glText.getCharHeight(), 180);  // Draw Test String
 		glText.end();                                   // End Text Rendering
 	}
