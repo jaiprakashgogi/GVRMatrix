@@ -1,58 +1,31 @@
 package com.android.texample2;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-public class Rain implements DropletCbListener{
-	// Rain in the manager of the droplets
-	ArrayList<Droplet> mDroplets;
-	private int delay, curr_delay = 0;
+public class Rain {
+	
 	private Texample2Renderer texample2Renderer;
 	private GLText glText;
-	private int MAX_DELAY = 50;
-	private Random rand;
-	private boolean isDelayStart = false;
-
-	public Rain(Texample2Renderer _texample2Renderer, GLText _glText) {
+	private ArrayList<Rainlet> rainlets;
+	private int MAX_COL = 10;
+	
+	public Rain(Texample2Renderer texample2Renderer2, GLText glText2) {
 		// TODO Auto-generated constructor stub
-		texample2Renderer = _texample2Renderer;
-		glText = _glText;
-		mDroplets = new ArrayList<Droplet>();
-		rand = new Random();
-		delay = rand.nextInt(MAX_DELAY) + 1;
-		Droplet mDrop = new Droplet(texample2Renderer, glText);
-		mDrop.setDropletCbListener(this);
-		mDroplets.add(mDrop);
+		texample2Renderer = texample2Renderer2;
+		glText = glText2;
+		rainlets = new ArrayList<Rainlet>();
+		for(int i=0; i< MAX_COL; i++) {
+			int position = -texample2Renderer.width/2 + (i-1) * (texample2Renderer.width/MAX_COL);
+			rainlets.add(new Rainlet(texample2Renderer, glText, position));
+		}
 	}
-
+	
 	public void update() {
 		// TODO Auto-generated method stub
-		if(curr_delay++ > delay && isDelayStart){
-			Droplet mDrop = new Droplet(texample2Renderer, glText);
-			mDrop.setDropletCbListener(this);
-			mDroplets.add(mDrop);
-			isDelayStart = false;
-			curr_delay = 0;
-		}
-		for(int i=0; i< mDroplets.size(); i++) {
-			mDroplets.get(i).update();
+		for(int i = 0; i< rainlets.size(); i++) {
+			rainlets.get(i).update();
 		}
 	}
-	
-
-	@Override
-	public void onDropletDone(Droplet drop) {
-		// TODO Auto-generated method stub
-		mDroplets.remove(drop);
-		isDelayStart = true;
-	}
-
-	@Override
-	public void onTailDelete() {
-		// TODO Auto-generated method stub
-		isDelayStart = true;
-	}
-	
 	
 
 }

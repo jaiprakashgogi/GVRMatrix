@@ -18,10 +18,10 @@ public class Droplet {
 	private int MAX_Y;
 	private boolean firstDelete = false;
 
-	Droplet(Texample2Renderer texample2Renderer, GLText _glText) {
+	Droplet(Texample2Renderer texample2Renderer, GLText _glText, int position) {
 		glText = _glText;
 		rand = new Random();
-		x = 0;
+		x = position;
 		y = 0;
 		speed = rand.nextInt(MAX_DROPLET_SPEED) + 1;
 		length = rand.nextInt(MAX_DROPLET_SIZE) + 1;

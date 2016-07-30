@@ -14,8 +14,8 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 	private GLText glText;                             // A GLText Instance
 	private Context context;                           // Context (from Activity)
 
-	int width = 100;                           // Updated to the Current Width + Height in onSurfaceChanged()
-	int height = 100;
+	int width = 720;                           // Updated to the Current Width + Height in onSurfaceChanged()
+	int height = 1280;
 	private float[] mProjMatrix = new float[16];
 	private float[] mVMatrix = new float[16];
 	private float[] mVPMatrix = new float[16];
