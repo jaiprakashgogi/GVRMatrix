@@ -67,14 +67,14 @@ public class SampleMain extends GVRScript {
 
 
         // List of textures (one per face)
-        ArrayList<Future<GVRTexture>> futureTextureList = new ArrayList<Future<GVRTexture>>(6);
+        /*ArrayList<Future<GVRTexture>> futureTextureList = new ArrayList<Future<GVRTexture>>(6);
         futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.back)));
         futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.right)));
         futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.front)));
         futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.left)));
         futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.top)));
         futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.bottom)));
-
+*/
 
             GVRCubeSceneObject mCubeEvironment = new GVRCubeSceneObject(gvrContext, false, cubemapMaterial);
             mCubeEvironment.getTransform().setScale(CUBE_WIDTH, CUBE_WIDTH, CUBE_WIDTH);
