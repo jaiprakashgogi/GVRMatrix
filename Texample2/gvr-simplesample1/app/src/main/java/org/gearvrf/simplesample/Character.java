@@ -2,6 +2,7 @@ package org.gearvrf.simplesample;
 
 import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRContext;
+import org.gearvrf.GVRScene;
 import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRTexture;
 
@@ -13,9 +14,11 @@ public class Character {
 	private char c;
 	GVRSceneObject sceneObject;
 	int MAX_DEPTH = 5;
+	GVRScene scene;
 	
 	public Character(GVRContext gvrContext, char _c, float x2, float y2, float z2) {
 		// TODO Auto-generated constructor stub
+		scene = gvrContext.getMainScene();
 		x = x2;
 		y = y2;
 		z = z2;
@@ -43,6 +46,8 @@ public class Character {
 	}
 
 	public void remove() {
+		if(sceneObject != null)
 		sceneObject.getParent().removeChildObject(sceneObject);
+
 	}
 }

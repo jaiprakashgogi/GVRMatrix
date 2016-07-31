@@ -152,12 +152,10 @@ public class SampleMain extends GVRScript {
 
     public void onTap() {
        Random r = new Random();
-       int low = 1;
-       int high = 9;
+       int low = 0;
+       int high = 8;
        int Result = r.nextInt(high-low) + low;
        pianoKeys.playMusic(Result);
-       drop.update();
-       
     }
 }
 

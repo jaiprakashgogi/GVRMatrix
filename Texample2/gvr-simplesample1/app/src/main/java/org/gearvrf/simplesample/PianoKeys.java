@@ -1,13 +1,12 @@
 package org.gearvrf.simplesample;
 
-import java.util.ArrayList;
-
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.util.Log;
-import android.app.Activity;
-import android.content.Context;
+
+import java.util.ArrayList;
 
 public class PianoKeys {
 	private SoundPool soundpoolObject;
@@ -24,7 +23,7 @@ public class PianoKeys {
 	private void initParams() {
 		// TODO Auto-generated method stub
 		loadBooleanList = new ArrayList<Boolean>();		
-		for( int i = 0; i < 7; ++i)
+		for( int i = 0; i < 8; ++i)
 		{
 			boolean tmp = false;
 			Log.d("shiyu", " "+i);
@@ -91,6 +90,7 @@ public class PianoKeys {
 	public void playMusic(int id)
 	{
 		int resId = 0;
+		Log.e("Shiyu", "id: " + id);
 		if(loadBooleanList.get(id))
 		{
 			Log.d("shiyu", "successful");

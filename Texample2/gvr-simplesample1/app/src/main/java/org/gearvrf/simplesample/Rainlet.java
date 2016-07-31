@@ -46,8 +46,11 @@ public class Rainlet implements DropletCbListener{
 	@Override
 	public void onDropletDone(Droplet drop) {
 		// TODO Auto-generated method stub
-		drop.remove();
-		mDroplets.remove(drop);
+		if(drop != null) {
+			drop.remove();
+			if(drop != null)
+			mDroplets.remove(drop);
+		}
 		isDelayStart = true;
 	}
 

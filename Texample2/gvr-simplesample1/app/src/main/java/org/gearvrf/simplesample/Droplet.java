@@ -1,7 +1,6 @@
 package org.gearvrf.simplesample;
 
 import org.gearvrf.GVRContext;
-import org.gearvrf.utility.Log;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -75,6 +74,7 @@ public class Droplet {
 
 	void remove() {
 		for (int i = 0; i < mCharacter.size(); i++) {
+			if(mCharacter.get(i) != null)
 			mCharacter.get(i).remove();
 		}
 	}
