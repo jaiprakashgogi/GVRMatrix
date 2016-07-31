@@ -49,6 +49,27 @@ public class PianoKeys {
 						case 1:
 							loadBooleanList.set(0, true);
 							break;
+						case 2:
+							loadBooleanList.set(1, true);
+							break;
+						case 3:
+							loadBooleanList.set(2, true);
+							break;
+						case 4:
+							loadBooleanList.set(3, true);
+							break;
+						case 5:
+							loadBooleanList.set(4, true);
+							break;
+						case 6:
+							loadBooleanList.set(5, true);
+							break;
+						case 7:
+							loadBooleanList.set(6, true);
+							break;
+						case 8:
+							loadBooleanList.set(7, true);
+							break;
 					}
 				}
 				
