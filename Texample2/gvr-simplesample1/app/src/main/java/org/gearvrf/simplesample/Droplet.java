@@ -14,21 +14,23 @@ public class Droplet {
 	float step;
 	ArrayList<Character> mCharacter;
 	private Random rand;
-	private int MAX_DROPLET_SIZE = 25;
-	private int MAX_DROPLET_SPEED = 10;
+	private int MAX_DROPLET_SIZE = 5;
+	private int MAX_DROPLET_SPEED = 5;
 	private DropletCbListener cb;
 	private float MAX_Y;
 	private boolean firstDelete = false;
-	float CHAR_HEIGHT = 0.1f;
-	float CHAR_PAD = 0.02f;
+	float CHAR_HEIGHT = 0.2f;
+	float CHAR_PAD = 0.1f;
 	int MAX_RES = 10;
 	private GVRContext gvrContext;
+	private float z;
 
-	Droplet(GVRContext _gvrContext, float position) {
+	Droplet(GVRContext _gvrContext, float position, float _z) {
 		gvrContext = _gvrContext;
 		rand = new Random();
 		x = position;
 		y = 2.5f;
+		z = _z;
 		speed = rand.nextInt(MAX_DROPLET_SPEED) + 1;
 		length = rand.nextInt(MAX_DROPLET_SIZE) + 1;
 		step = CHAR_HEIGHT + 2 * CHAR_PAD;
@@ -36,7 +38,7 @@ public class Droplet {
 		mCharacter = new ArrayList<Character>();
 
 		char c = (char) (rand.nextInt(MAX_RES) + 1);
-		mCharacter.add(new Character(gvrContext, c, x, y));
+		mCharacter.add(new Character(gvrContext, c, x, y, z));
 	}
 	
 	public void setDropletCbListener(DropletCbListener _cb) {
@@ -58,7 +60,7 @@ public class Droplet {
 			Log.i("Droplet" , "Jai is here");
 			char c = (char) (rand.nextInt(MAX_RES) + 1);
 			y -= step;
-			mCharacter.add(new Character(gvrContext, c, x, y));
+			mCharacter.add(new Character(gvrContext, c, x, y, z));
 			curr_speed = 0;
 			if( y<= MAX_Y - length * 0.1f) {
 				cb.onDropletDone(this);

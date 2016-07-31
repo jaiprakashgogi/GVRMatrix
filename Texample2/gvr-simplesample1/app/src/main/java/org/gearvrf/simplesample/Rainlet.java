@@ -12,17 +12,18 @@ public class Rainlet implements DropletCbListener{
 	private int MAX_DELAY = 50;
 	private Random rand;
 	private boolean isDelayStart = false;
-	private float position;
+	private float position, z;
 	GVRContext gvrContext;
 
-	public Rainlet(GVRContext _gvrContext, float _position) {
+	public Rainlet(GVRContext _gvrContext, float _y, float _z) {
 		// TODO Auto-generated constructor stub
 		gvrContext = _gvrContext;
-		position = _position;
+		position = _y;
+		z = _z;
 		mDroplets = new ArrayList<Droplet>();
 		rand = new Random();
 		delay = rand.nextInt(MAX_DELAY) + 1;
-		Droplet mDrop = new Droplet(gvrContext, position);
+		Droplet mDrop = new Droplet(gvrContext, position, z);
 		mDrop.setDropletCbListener(this);
 		mDroplets.add(mDrop);
 	}
@@ -30,7 +31,7 @@ public class Rainlet implements DropletCbListener{
 	public void update() {
 		// TODO Auto-generated method stub
 		if(curr_delay++ > delay && isDelayStart){
-			Droplet mDrop = new Droplet(gvrContext, position);
+			Droplet mDrop = new Droplet(gvrContext, position, z);
 			mDrop.setDropletCbListener(this);
 			mDroplets.add(mDrop);
 			isDelayStart = false;

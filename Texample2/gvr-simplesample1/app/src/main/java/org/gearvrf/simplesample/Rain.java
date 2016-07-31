@@ -13,14 +13,14 @@ public class Rain implements GVRDrawFrameListener{
 	private int MAX_COL = 10;
 	GVRContext gvrContext;
 	
-	public Rain(GVRContext _gvrContext) {
+	public Rain(GVRContext _gvrContext, float z) {
 		// TODO Auto-generated constructor stub
 		gvrContext = _gvrContext;
 		gvrContext.registerDrawFrameListener(this);
 		rainlets = new ArrayList<Rainlet>();
 		for(int i=0; i< MAX_COL; i++) {
 			float position = - WALL_SIZE/2 + (i-1) * (WALL_SIZE/MAX_COL);
-			rainlets.add(new Rainlet(gvrContext, position));
+			rainlets.add(new Rainlet(gvrContext, position, z));
 		}
 	}
 	

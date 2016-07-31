@@ -44,9 +44,9 @@ public class SampleMain extends GVRScript {
         // set background color
         GVRCameraRig mainCameraRig = scene.getMainCameraRig();
         mainCameraRig.getLeftCamera()
-                .setBackgroundColor(Color.BLACK);
+                .setBackgroundColor(Color.GRAY);
         mainCameraRig.getRightCamera()
-                .setBackgroundColor(Color.BLACK);
+                .setBackgroundColor(Color.GRAY);
         // load texture
         /*GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(
                 mGVRContext, R.drawable.gearvr_logo));
@@ -62,7 +62,8 @@ public class SampleMain extends GVRScript {
 
         //Rain rain = new Rain(gvrContext);
         char c = 0;
-        drop = new Rain(gvrContext);
+        drop = new Rain(gvrContext, -5.f);
+        Rain rain = new Rain(gvrContext, -10.f);
         // gvrContext.registerOnDrawFrameListener(new myDrawFrameListener());
 
     }
