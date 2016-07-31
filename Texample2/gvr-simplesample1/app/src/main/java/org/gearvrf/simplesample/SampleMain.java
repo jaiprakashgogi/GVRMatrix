@@ -19,13 +19,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 
-import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRCameraRig;
 import org.gearvrf.GVRContext;
 import org.gearvrf.GVRScene;
-import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRScript;
-import org.gearvrf.GVRTexture;
 
 public class SampleMain extends GVRScript {
 
@@ -34,6 +31,7 @@ public class SampleMain extends GVRScript {
     private GVRTexSceneObject texObject;
     private GLSurfaceView glView;
     private Texample2Renderer myRenderer;
+    Rain drop;
 
     @Override
     public void onInit(GVRContext gvrContext) {
@@ -50,7 +48,7 @@ public class SampleMain extends GVRScript {
         mainCameraRig.getRightCamera()
                 .setBackgroundColor(Color.BLACK);
         // load texture
-        GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(
+        /*GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(
                 mGVRContext, R.drawable.gearvr_logo));
         GVRSceneObject sceneObject = new GVRSceneObject(gvrContext, 4.0f, 2.0f,
                 texture);
@@ -59,12 +57,12 @@ public class SampleMain extends GVRScript {
         sceneObject.getTransform().setPosition(0.0f, 0.0f, -3.0f);
 
         // add the scene object to the scene graph
-        scene.addSceneObject(sceneObject);
+        scene.addSceneObject(sceneObject);*/
 
-        GVRTexSceneObject myTex = new GVRTexSceneObject(gvrContext, 1, 1);
-        myTex.getTransform().setPosition(0, 0, -3.f);
-        scene.addSceneObject(myTex);
 
+        //Rain rain = new Rain(gvrContext);
+        char c = 0;
+        drop = new Rain(gvrContext);
         // gvrContext.registerOnDrawFrameListener(new myDrawFrameListener());
 
     }
@@ -98,7 +96,9 @@ public class SampleMain extends GVRScript {
     }
 
 
-
+    public void onTap() {
+        drop.update();
+    }
 }
 
 

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="VrApi">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../android/GearVRf/GVRf/Framework/framework/src/main/libs/VrApi.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

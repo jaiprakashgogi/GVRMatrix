@@ -1,0 +1,3 @@
+include ':framework'
+include ':app'
+project(':framework').projectDir = new File('/Users/jaiprakashgogi/workspace/android/GearVRf/GVRf/Framework/framework')
