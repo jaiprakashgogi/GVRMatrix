@@ -69,4 +69,20 @@ public class SampleActivity extends GVRActivity {
 		player0.setVolume(1.0f, 1.0f);
 		player0.start();
 	}
+	
+	public void onStop()
+	{
+		if(player.isLooping())
+		{
+			player.stop();
+			player.release();
+		}
+		if(player0.isLooping())
+		{
+			player0.stop();
+			player0.release();
+		}
+		//soundpoolObject.release();
+		super.onStop();
+	}
 }

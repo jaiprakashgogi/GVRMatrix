@@ -59,7 +59,8 @@ public class SampleMain extends GVRScript {
                 .setBackgroundColor(Color.GRAY);
         scene.setStatsEnabled(true);
         scene.setFrustumCulling(true);
-
+        
+     
         // Uncompressed cubemap texture
         Future<GVRTexture> futureCubemapTexture = gvrContext.loadFutureCubemapTexture(new GVRAndroidResource(mGVRContext, R.raw.glasgow_university));
         GVRMaterial cubemapMaterial = new GVRMaterial(gvrContext, GVRMaterial.GVRShaderType.Cubemap.ID);
