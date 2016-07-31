@@ -46,8 +46,8 @@ public class Droplet {
 	}
 
 	void update() {
-		Log.i("Droplet", "curr_speed: " + curr_speed + " Speed: " + speed + " Len: " + length);
-		Log.i("Droplet", "x: " + x + " x " + y);
+		//Log.i("Droplet", "curr_speed: " + curr_speed + " Speed: " + speed + " Len: " + length);
+		//Log.i("Droplet", "x: " + x + " x " + y);
 
 		if (curr_speed++ > speed) {
 			if (mCharacter.size() > length) {
@@ -57,7 +57,7 @@ public class Droplet {
 					firstDelete = true;
 				}
 			}
-			Log.i("Droplet" , "Jai is here");
+			//Log.i("Droplet" , "Jai is here");
 			char c = (char) (rand.nextInt(MAX_RES) + 1);
 			y -= step;
 			mCharacter.add(new Character(gvrContext, c, x, y, z));
