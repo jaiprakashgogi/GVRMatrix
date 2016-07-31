@@ -19,19 +19,29 @@ import android.content.Context;
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 
+import java.util.ArrayList;
+import java.util.concurrent.Future;
+
+import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRCameraRig;
 import org.gearvrf.GVRContext;
+import org.gearvrf.GVRMaterial;
 import org.gearvrf.GVRScene;
+import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRScript;
+import org.gearvrf.GVRTexture;
+import org.gearvrf.scene_objects.GVRCubeSceneObject;
+import org.gearvrf.scene_objects.GVRSphereSceneObject;
 
 public class SampleMain extends GVRScript {
 
     private GVRContext mGVRContext;
     private Context context;
-    private GVRTexSceneObject texObject;
     private GLSurfaceView glView;
     private Texample2Renderer myRenderer;
     Rain drop;
+    private static final float CUBE_WIDTH = 20.0f;
+    private static final float SCALE_FACTOR = 2.0f;
 
     @Override
     public void onInit(GVRContext gvrContext) {
@@ -47,6 +57,30 @@ public class SampleMain extends GVRScript {
                 .setBackgroundColor(Color.GRAY);
         mainCameraRig.getRightCamera()
                 .setBackgroundColor(Color.GRAY);
+        scene.setStatsEnabled(true);
+        scene.setFrustumCulling(true);
+
+        // Uncompressed cubemap texture
+        Future<GVRTexture> futureCubemapTexture = gvrContext.loadFutureCubemapTexture(new GVRAndroidResource(mGVRContext, R.raw.glasgow_university));
+        GVRMaterial cubemapMaterial = new GVRMaterial(gvrContext, GVRMaterial.GVRShaderType.Cubemap.ID);
+        cubemapMaterial.setMainTexture(futureCubemapTexture);
+
+
+        // List of textures (one per face)
+        ArrayList<Future<GVRTexture>> futureTextureList = new ArrayList<Future<GVRTexture>>(6);
+        futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.back)));
+        futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.right)));
+        futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.front)));
+        futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.left)));
+        futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.top)));
+        futureTextureList.add(gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.bottom)));
+
+
+            GVRCubeSceneObject mCubeEvironment = new GVRCubeSceneObject(gvrContext, false, cubemapMaterial);
+            mCubeEvironment.getTransform().setScale(CUBE_WIDTH, CUBE_WIDTH, CUBE_WIDTH);
+            //uncomment the following line to make cubemap a scene object
+            scene.addSceneObject(mCubeEvironment);
+
         // load texture
         /*GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(
                 mGVRContext, R.drawable.gearvr_logo));
@@ -98,7 +132,7 @@ public class SampleMain extends GVRScript {
 
 
     public void onTap() {
-        drop.update();
+       drop.update();
     }
 }
 
