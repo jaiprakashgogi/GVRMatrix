@@ -31,6 +31,7 @@ import org.gearvrf.GVRTexture;
 import org.gearvrf.scene_objects.GVRCubeSceneObject;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.concurrent.Future;
 
 public class SampleMain extends GVRScript {
@@ -150,7 +151,11 @@ public class SampleMain extends GVRScript {
 
 
     public void onTap() {
-       pianoKeys.playMusic();
+       Random r = new Random();
+       int low = 1;
+       int high = 9;
+       int Result = r.nextInt(high-low) + low;
+       pianoKeys.playMusic(Result);
        drop.update();
        
     }

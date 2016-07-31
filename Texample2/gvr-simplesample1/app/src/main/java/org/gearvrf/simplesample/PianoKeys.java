@@ -55,17 +55,25 @@ public class PianoKeys {
 			}
 		});
 		soundIdList = new ArrayList<Integer>();
-		soundIdList.add(soundpoolObject.load(androidContext, R.raw.pianocsharp, 1));
+		soundIdList.add(soundpoolObject.load(androidContext, R.raw.a1, 1));
+		soundIdList.add(soundpoolObject.load(androidContext, R.raw.a2, 1));
+		soundIdList.add(soundpoolObject.load(androidContext, R.raw.a3, 1));
+		soundIdList.add(soundpoolObject.load(androidContext, R.raw.a4, 1));
+		soundIdList.add(soundpoolObject.load(androidContext, R.raw.a5, 1));
+		soundIdList.add(soundpoolObject.load(androidContext, R.raw.a6, 1));
+		soundIdList.add(soundpoolObject.load(androidContext, R.raw.a7, 1));
+		soundIdList.add(soundpoolObject.load(androidContext, R.raw.a8, 1));
+		
 		
 	}
 	
-	public void playMusic()
+	public void playMusic(int id)
 	{
 		int resId = 0;
-		if(loadBooleanList.get(resId))
+		if(loadBooleanList.get(id))
 		{
 			Log.d("shiyu", "successful");
-			resId = soundIdList.get(0);
+			resId = soundIdList.get(id);
 		}
 		soundpoolObject.play(resId, 1.5f, 1.5f, 1, 0, 1.0f);
 	}
