@@ -19,19 +19,19 @@ import android.content.Context;
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 
-import java.util.ArrayList;
-import java.util.concurrent.Future;
-
 import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRCameraRig;
 import org.gearvrf.GVRContext;
 import org.gearvrf.GVRMaterial;
+import org.gearvrf.GVRMesh;
 import org.gearvrf.GVRScene;
 import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRScript;
 import org.gearvrf.GVRTexture;
 import org.gearvrf.scene_objects.GVRCubeSceneObject;
-import org.gearvrf.scene_objects.GVRSphereSceneObject;
+
+import java.io.IOException;
+import java.util.concurrent.Future;
 
 public class SampleMain extends GVRScript {
 
@@ -63,7 +63,7 @@ public class SampleMain extends GVRScript {
         
      
         // Uncompressed cubemap texture
-        Future<GVRTexture> futureCubemapTexture = gvrContext.loadFutureCubemapTexture(new GVRAndroidResource(mGVRContext, R.raw.glasgow_university));
+        Future<GVRTexture> futureCubemapTexture = gvrContext.loadFutureCubemapTexture(new GVRAndroidResource(mGVRContext, R.raw.beach));
         GVRMaterial cubemapMaterial = new GVRMaterial(gvrContext, GVRMaterial.GVRShaderType.Cubemap.ID);
         cubemapMaterial.setMainTexture(futureCubemapTexture);
 
@@ -82,6 +82,20 @@ public class SampleMain extends GVRScript {
             mCubeEvironment.getTransform().setScale(CUBE_WIDTH, CUBE_WIDTH, CUBE_WIDTH);
             //uncomment the following line to make cubemap a scene object
             scene.addSceneObject(mCubeEvironment);
+
+        try {
+            GVRMesh mesh = gvrContext.loadMesh(new GVRAndroidResource(mGVRContext.getContext(), "shield.obj"));
+            GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(
+                    mGVRContext.getContext(), "shield.jpg"));
+            GVRSceneObject sceneObject = new GVRSceneObject(gvrContext, mesh,
+                    texture);
+            sceneObject.getTransform().setPosition(0.0f, 0.0f, -3.0f);
+            sceneObject.getTransform().setScale(0.5f, 0.5f, 0.5f);
+            // add the scene object to the scene graph
+            scene.addSceneObject(sceneObject);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // load texture
         /*GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(
