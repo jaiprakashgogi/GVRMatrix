@@ -15,15 +15,20 @@
 
 package org.gearvrf.simplesample;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import org.gearvrf.GVRActivity;
+
 
 public class SampleActivity extends GVRActivity {
 
     SampleMain mSampleMain;
     private long lastDownTime = 0;
+	private MediaPlayer player;
+	private MediaPlayer player0;
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -49,4 +54,19 @@ public class SampleActivity extends GVRActivity {
 
         return true;
     }
+    
+	public void onResume() {
+		Log.d("shiyu", "In onResume");
+		super.onResume();
+		player = MediaPlayer.create(this, R.raw.spacesynth);
+		//player.prepareAsync();
+		player.setLooping(true);
+		player.setVolume(1.0f, 1.0f);
+		player.start();
+		player0 = MediaPlayer.create(this, R.raw.dobroide);
+		//player0.prepareAsync();
+		player0.setLooping(true);
+		player0.setVolume(1.0f, 1.0f);
+		player0.start();
+	}
 }

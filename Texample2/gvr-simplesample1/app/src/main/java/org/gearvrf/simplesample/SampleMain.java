@@ -133,6 +133,7 @@ public class SampleMain extends GVRScript {
 
     public void onTap() {
        drop.update();
+       
     }
 }
 
