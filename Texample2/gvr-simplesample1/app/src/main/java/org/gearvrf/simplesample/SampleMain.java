@@ -150,7 +150,7 @@ public class SampleMain extends GVRScript {
 
 
     public void onTap() {
-       pianoKeys.playMusic(0);
+       pianoKeys.playMusic();
        drop.update();
        
     }

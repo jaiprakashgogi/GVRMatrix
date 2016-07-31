@@ -59,12 +59,14 @@ public class PianoKeys {
 		
 	}
 	
-	public void playMusic(int resId)
+	public void playMusic()
 	{
+		int resId = 0;
 		if(loadBooleanList.get(resId))
 		{
-			soundpoolObject.play(resId, 1.5f, 1.5f, 1, 0, 1.0f);
+			resId = soundIdList.get(0);
 		}
+		soundpoolObject.play(resId, 1.5f, 1.5f, 1, 0, 1.0f);
 	}
 	
 	
