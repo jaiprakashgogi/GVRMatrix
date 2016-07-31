@@ -7,31 +7,33 @@ import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.util.Log;
 import android.app.Activity;
+import android.content.Context;
 
 public class PianoKeys {
 	private SoundPool soundpoolObject;
 	private ArrayList<Boolean> loadBooleanList;
-	
-	public PianoKeys() {
+	private ArrayList<Integer> soundIdList;
+	private Context androidContext;
+	public PianoKeys(Context context) {
 		// TODO Auto-generated constructor stub
-
+		androidContext = context;
 		initParams();
 		soundPoolLoadFunc();
 	}
 
 	private void initParams() {
 		// TODO Auto-generated method stub
-	/*	loadBooleanList = new ArrayList<Boolean>();		
+		loadBooleanList = new ArrayList<Boolean>();		
 		for( int i = 0; i < 7; ++i)
 		{
 			boolean tmp = false;
 			Log.d("shiyu", " "+i);
 			loadBooleanList.add(tmp);
-		}*/
+		}
 	}
 
 	private void soundPoolLoadFunc() {
-/*		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		soundpoolObject = new SoundPool(12, AudioManager.STREAM_MUSIC, 0);
 		soundpoolObject.setOnLoadCompleteListener(new OnLoadCompleteListener() {
 			
@@ -52,7 +54,17 @@ public class PianoKeys {
 				
 			}
 		});
-		soundIdList = new ArrayList<Integer>();*/
+		soundIdList = new ArrayList<Integer>();
+		soundIdList.add(soundpoolObject.load(androidContext, R.raw.a1, 1));
+		
+	}
+	
+	public void playMusic(int resId)
+	{
+		if(loadBooleanList.get(resId))
+		{
+			soundpoolObject.play(resId, 1.5f, 1.5f, 1, 0, 1.0f);
+		}
 	}
 	
 	

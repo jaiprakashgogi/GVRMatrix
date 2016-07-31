@@ -85,4 +85,5 @@ public class SampleActivity extends GVRActivity {
 		//soundpoolObject.release();
 		super.onStop();
 	}
+
 }

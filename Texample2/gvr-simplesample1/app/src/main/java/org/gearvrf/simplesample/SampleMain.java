@@ -40,6 +40,7 @@ public class SampleMain extends GVRScript {
     private GLSurfaceView glView;
     private Texample2Renderer myRenderer;
     Rain drop;
+	private PianoKeys pianoKeys;
     private static final float CUBE_WIDTH = 20.0f;
     private static final float SCALE_FACTOR = 2.0f;
 
@@ -100,7 +101,9 @@ public class SampleMain extends GVRScript {
         drop = new Rain(gvrContext, -5.f);
         Rain rain = new Rain(gvrContext, -10.f);
         // gvrContext.registerOnDrawFrameListener(new myDrawFrameListener());
-
+        
+        //Piano class object
+        pianoKeys = new PianoKeys(mGVRContext.getContext());
     }
 
     /*
@@ -133,6 +136,7 @@ public class SampleMain extends GVRScript {
 
 
     public void onTap() {
+       pianoKeys.playMusic(0);
        drop.update();
        
     }
