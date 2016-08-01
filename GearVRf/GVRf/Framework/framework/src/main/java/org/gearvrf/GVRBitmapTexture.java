@@ -15,10 +15,7 @@
 
 package org.gearvrf;
 
-import static android.opengl.GLES20.GL_NO_ERROR;
-import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.glBindTexture;
-import static android.opengl.GLES20.glGetError;
+import static android.opengl.GLES20.*;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -45,11 +42,6 @@ public class GVRBitmapTexture extends GVRTexture {
      */
     public GVRBitmapTexture(GVRContext gvrContext, Bitmap bitmap) {
         this(gvrContext, bitmap, gvrContext.DEFAULT_TEXTURE_PARAMETERS);
-    }
-
-    public GVRBitmapTexture(GVRContext gvrContext, int textureid) {
-        super(gvrContext, NativeBaseTexture.bareConstructorId(textureid));
-        NativeBaseTexture.setJavaOwner(getNative(), this);
     }
 
     /**
@@ -273,6 +265,8 @@ public class GVRBitmapTexture extends GVRTexture {
     private boolean updateCall(Bitmap bitmap) {
         glBindTexture(GL_TEXTURE_2D, getId());
         GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);        
         return (glGetError() == GL_NO_ERROR);
     }
 
@@ -347,8 +341,6 @@ public class GVRBitmapTexture extends GVRTexture {
 
 final class NativeBaseTexture {
     static native long bareConstructor(int[] textureParameterValues);
-    static native long bareConstructorId(int textureid);
-
     static native void setJavaOwner(long pointer, GVRTexture owner);
 
     static native boolean update(long pointer, int width, int height,

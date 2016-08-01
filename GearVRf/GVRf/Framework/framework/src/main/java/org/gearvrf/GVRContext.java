@@ -29,6 +29,8 @@ import org.gearvrf.GVRAndroidResource.TextureCallback;
 import org.gearvrf.GVRHybridObject.NativeCleanupHandler;
 import org.gearvrf.animation.GVRAnimation;
 import org.gearvrf.animation.GVRAnimationEngine;
+import org.gearvrf.animation.GVRMaterialAnimation;
+import org.gearvrf.animation.GVROnFinish;
 import org.gearvrf.asynchronous.GVRAsynchronousResourceLoader;
 import org.gearvrf.asynchronous.GVRCompressedTexture;
 import org.gearvrf.asynchronous.GVRCompressedTextureLoader;
@@ -36,6 +38,7 @@ import org.gearvrf.debug.DebugServer;
 import org.gearvrf.io.GVRInputManager;
 import org.gearvrf.periodic.GVRPeriodicEngine;
 import org.gearvrf.scene_objects.GVRModelSceneObject;
+import org.gearvrf.scene_objects.GVRTextViewSceneObject;
 import org.gearvrf.script.GVRScriptManager;
 import org.gearvrf.utility.Log;
 import org.gearvrf.utility.ResourceCache;
@@ -45,8 +48,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.view.Gravity;
 import android.view.KeyEvent;
 
 /**
@@ -548,7 +553,7 @@ public abstract class GVRContext implements IEventReceiver {
      * @throws IOException
      *             File does not exist or cannot be read
      *
-     * @deprecated Replaced by {@link #loadJassimpModel(String, EnumSet)}
+     * @deprecated Replaced by {@link #GVRAssetLoader.loadModel}
      */
     public GVRSceneObject getAssimpModel(String assetRelativeFilename,
             EnumSet<GVRImportSettings> settings) throws IOException {
@@ -556,28 +561,28 @@ public abstract class GVRContext implements IEventReceiver {
     }
     
     /**
-     * @deprecated Replaced by {@link #loadModelFromSD}
+     * @deprecated Replaced by {@link #GVRAssetLoader.loadModel}
      */
     public GVRModelSceneObject loadJassimpModelFromSD(String externalFile) throws IOException {
         return loadModelFromSD(externalFile);
     }
 
     /**
-     * @deprecated Replaced by {@link #loadModelFromSD}
+     * @deprecated Replaced by {@link #GVRAssetLoader.loadModel}
      */
     public GVRModelSceneObject loadJassimpModelFromSD(String externalFile, EnumSet<GVRImportSettings> settings) throws IOException {
         return loadModelFromSD(externalFile, settings);
     }
 
     /**
-     * @deprecated Replaced by {@link #loadModel}
+     * @deprecated Replaced by {@link #GVRAssetLoader.loadModel}
      */
     public GVRModelSceneObject loadJassimpModel(String assetFile) throws IOException {
         return loadModel(assetFile);
     }
 
     /**
-     * @deprecated Replaced by {@link #loadModel}
+     * @deprecated Replaced by {@link #GVRAssetLoader.loadModel}
      */
     public GVRModelSceneObject loadJassimpModel(String assetFile, EnumSet<GVRImportSettings> settings) throws IOException {
         return loadModel(assetFile, settings);
@@ -615,20 +620,20 @@ public abstract class GVRContext implements IEventReceiver {
      *
      * @throws IOException
      *             File does not exist or cannot be read
+     * @deprecated Replaced by {@link GVRAssetLoader.loadModel}
      */
     public GVRModelSceneObject loadModelFromSD(String externalFile, EnumSet<GVRImportSettings> settings) throws IOException {
         return mImporter.loadModel("sd:" + externalFile, settings, true, null);
     }
 
     /**
-     * Simple, high-level method to load a scene object {@link GVRModelSceneObject} from
-     * a 3D model stored in Android application assets.
+     * Simple, high-level method to load a scene object {@link GVRModelSceneObject} from a 3D model.
      *
-     * @param assetFile
-     *            A filename, relative to the {@code assets} directory. The file
-     *            can be in a sub-directory of the {@code assets} directory:
-     *            {@code "foo/bar.png"} will open the file
-     *            {@code assets/foo/bar.png}
+     * @param assetFile The filename or URL of the model.
+     *                  If the filename begins with "sd:" it is assumed to be on the SD card.
+     *                  If it begins with "http:" or "https:", it is assumed to be a URL.
+     *                  Otherwise, it is assumed to be in the {@code assets directory}:
+     *                  {@code "foo/bar.png"} will open the file {@code assets/foo/bar.png}
      *
      * @return A {@link GVRModelSceneObject} that contains the meshes with textures and bones
      * and animations.
@@ -643,11 +648,11 @@ public abstract class GVRContext implements IEventReceiver {
     /**
      * Load a scene object {@link GVRModelSceneObject} from a 3D model and add it to the scene.
      *
-     * @param assetFile
-     *            A filename, relative to the {@code assets} directory. The file
-     *            can be in a sub-directory of the {@code assets} directory:
-     *            {@code "foo/bar.png"} will open the file
-     *            {@code assets/foo/bar.png}
+     * @param assetFile The filename or URL of the model.
+     *                  If the filename begins with "sd:" it is assumed to be on the SD card.
+     *                  If it begins with "http:" or "https:", it is assumed to be a URL.
+     *                  Otherwise, it is assumed to be in the {@code assets directory}:
+     *                  {@code "foo/bar.png"} will open the file {@code assets/foo/bar.png}
      *
      * @param settings
      *            Additional import {@link GVRImportSettings settings}
@@ -2320,8 +2325,8 @@ public abstract class GVRContext implements IEventReceiver {
      * Start a debug server on the default TCP/IP port for the default number
      * of clients.
      */
-    public void startDebugServer() {
-        startDebugServer(DebugServer.DEFAULT_DEBUG_PORT, DebugServer.NUM_CLIENTS);
+    public DebugServer startDebugServer() {
+        return startDebugServer(DebugServer.DEFAULT_DEBUG_PORT, DebugServer.NUM_CLIENTS);
     }
 
     /**
@@ -2333,16 +2338,32 @@ public abstract class GVRContext implements IEventReceiver {
      * @param maxClients
      *     The maximum number of concurrent clients.
      */
-    public synchronized void startDebugServer(int port, int maxClients) {
+    public synchronized DebugServer startDebugServer(int port, int maxClients) {
         if (mDebugServer != null) {
             Log.e(TAG, "Debug server has already been started.");
-            return;
+            return mDebugServer;
         }
 
         mDebugServer = new DebugServer(this, port, maxClients);
         Threads.spawn(mDebugServer);
+        return mDebugServer;
     }
 
+    /**
+     * Logs an error by sending an error event to all listeners.
+     * 
+     * Error events can be generated by any part of GearVRF,
+     * from any thread. They are always sent to the event receiver
+     * of the GVRContext.
+     * 
+     * @param message error message
+     * @param sender object which had the error
+     * @see IErrorEvents
+     */
+    public void logError(String message, Object sender) {
+        getEventManager().sendEvent(this, IErrorEvents.class, "onError", new Object[] { message, sender });
+    }
+    
     /**
      * Stops the current debug server. Active connections are
      * not affected.
@@ -2768,5 +2789,74 @@ public abstract class GVRContext implements IEventReceiver {
         } finally {
             super.finalize();
         }
+    }
+
+    /**
+     * Show a toast-like message for 3 seconds
+     *
+     * @param message
+     */
+    public void showToast(final String message) {
+        showToast(message, 3f);
+    }
+
+    /**
+     * Show a toast-like message for the specified duration
+     *
+     * @param message
+     * @param duration in seconds
+     */
+    public void showToast(final String message, float duration) {
+        final float quadWidth = 1.2f;
+        final GVRTextViewSceneObject toastSceneObject = new GVRTextViewSceneObject(this, quadWidth, quadWidth / 5,
+                message);
+
+        toastSceneObject.setTextSize(6);
+        toastSceneObject.setTextColor(Color.WHITE);
+        toastSceneObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.TOP);
+        toastSceneObject.setBackgroundColor(Color.DKGRAY);
+        toastSceneObject.setRefreshFrequency(GVRTextViewSceneObject.IntervalFrequency.REALTIME);
+
+        final GVRTransform t = toastSceneObject.getTransform();
+        t.setPositionZ(-1.5f);
+
+        final GVRRenderData rd = toastSceneObject.getRenderData();
+        final float finalOpacity = 0.7f;
+        rd.getMaterial().setOpacity(0);
+        rd.setRenderingOrder(2 * GVRRenderData.GVRRenderingOrder.OVERLAY);
+        rd.setDepthTest(false);
+
+        final GVRCameraRig rig = getMainScene().getMainCameraRig();
+        rig.addChildObject(toastSceneObject);
+
+        final GVRMaterialAnimation fadeOut = new GVRMaterialAnimation(rd.getMaterial(), duration / 4.0f) {
+            @Override
+            protected void animate(GVRHybridObject target, float ratio) {
+                final GVRMaterial material = (GVRMaterial) target;
+                material.setOpacity(finalOpacity - ratio * finalOpacity);
+            }
+        };
+        fadeOut.setOnFinish(new GVROnFinish() {
+            @Override
+            public void finished(GVRAnimation animation) {
+                rig.removeChildObject(toastSceneObject);
+            }
+        });
+
+        final GVRMaterialAnimation fadeIn = new GVRMaterialAnimation(rd.getMaterial(), 3.0f * duration / 4.0f) {
+            @Override
+            protected void animate(GVRHybridObject target, float ratio) {
+                final GVRMaterial material = (GVRMaterial) target;
+                material.setOpacity(ratio * finalOpacity);
+            }
+        };
+        fadeIn.setOnFinish(new GVROnFinish() {
+            @Override
+            public void finished(GVRAnimation animation) {
+                getAnimationEngine().start(fadeOut);
+            }
+        });
+
+        getAnimationEngine().start(fadeIn);
     }
 }

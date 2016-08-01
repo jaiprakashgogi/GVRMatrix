@@ -47,7 +47,7 @@ class Mesh: public HybridObject {
 public:
     Mesh() :
             vertices_(), normals_(), tex_coords_(), indices_(), float_vectors_(), vec2_vectors_(), vec3_vectors_(), vec4_vectors_(),
-                    have_bounding_volume_(false), vao_dirty_(true),
+                    have_bounding_volume_(false), vao_dirty_(true),is_dynamic_(false), mesh_modified_(true),
                     boneVboID_(GVR_INVALID), vertexBoneData_(this), bone_data_dirty_(true), regenerate_vao_(true)
     {
     }
@@ -67,6 +67,19 @@ public:
         indices.swap(indices_);
 
         deleteVaos();
+    }
+
+    void deleteVaoForProgram(int programId)
+    {
+        auto it = program_ids_.find(programId);
+        if (it != program_ids_.end())
+        {
+            GLVaoVboId ids = it->second;
+            deleter_->queueVertexArray(ids.vaoID);
+            deleter_->queueBuffer(ids.static_vboID);
+            deleter_->queueBuffer(ids.triangle_vboID);
+            program_ids_.erase(it);
+        }
     }
 
     void deleteVaos() {
@@ -92,6 +105,7 @@ public:
         have_bounding_volume_ = false;
         getBoundingVolume(); // calculate bounding volume
         vao_dirty_ = true;
+        mesh_modified_ = true;
     }
 
     void set_vertices(std::vector<glm::vec3>&& vertices) {
@@ -99,6 +113,7 @@ public:
         have_bounding_volume_ = false;
         getBoundingVolume(); // calculate bounding volume
         vao_dirty_ = true;
+        mesh_modified_ = true;
     }
 
     const std::vector<glm::vec3>& normals() const {
@@ -108,6 +123,7 @@ public:
     void set_normals(const std::vector<glm::vec3>& normals) {
         normals_ = normals;
         vao_dirty_ = true;
+        mesh_modified_ = true;
     }
 
     void set_normals(std::vector<glm::vec3>&& normals) {
@@ -122,11 +138,13 @@ public:
     void set_tex_coords(const std::vector<glm::vec2>& tex_coords) {
         tex_coords_ = tex_coords;
         vao_dirty_ = true;
+        mesh_modified_ = true;
     }
 
     void set_tex_coords(std::vector<glm::vec2>&& tex_coords) {
         tex_coords_ = std::move(tex_coords);
         vao_dirty_ = true;
+        mesh_modified_ = true;
     }
 
     const std::vector<unsigned short>& triangles() const {
@@ -136,11 +154,13 @@ public:
     void set_triangles(const std::vector<unsigned short>& triangles) {
         indices_ = triangles;
         vao_dirty_ = true;
+        mesh_modified_ = true;
     }
 
     void set_triangles(std::vector<unsigned short>&& triangles) {
         indices_ = std::move(triangles);
         vao_dirty_ = true;
+        mesh_modified_ = true;
     }
 
     const std::vector<unsigned short>& indices() const {
@@ -150,11 +170,13 @@ public:
     void set_indices(const std::vector<unsigned short>& indices) {
         indices_ = indices;
         vao_dirty_ = true;
+        mesh_modified_ = true;
     }
 
     void set_indices(std::vector<unsigned short>&& indices) {
         indices_ = std::move(indices);
         vao_dirty_ = true;
+        mesh_modified_ = true;
     }
 
     bool hasAttribute(std::string key) const {
@@ -282,8 +304,6 @@ public:
         LOGD("SHADER: setVertexAttrib %s\n", key.c_str());
     }
 
-    // generate VAO
-    void generateVAO(int programId);
 
     const GLuint getVAOId(int programId);
 
@@ -305,7 +325,18 @@ public:
         vertexBoneData_.setBones(std::move(bones));
         bone_data_dirty_ = true;
     }
-
+    void setDynamic(bool status){
+    	is_dynamic_ = status;
+    }
+    bool isDynamic(){
+    	return is_dynamic_;
+    }
+    bool isMeshModified(){
+    	return mesh_modified_;
+    }
+    void setMeshModified(bool modify){
+    	mesh_modified_ = modify;
+    }
     VertexBoneData &getVertexBoneData() {
         return vertexBoneData_;
     }
@@ -352,6 +383,14 @@ public:
     	 }
 
     }
+
+     void forceShouldReset() { // one time, then false
+         vao_dirty_ = true;
+         bone_data_dirty_ = true;
+     }
+
+     // generate VAO
+     void generateVAO(int programId);
 
 private:
     Mesh(const Mesh& mesh);
@@ -414,7 +453,8 @@ private:
 
     GLuint boneVboID_;
     bool bone_data_dirty_;
-
+    bool is_dynamic_;
+    bool mesh_modified_;
     GlDelete* deleter_ = nullptr;
     static std::vector<std::string> dynamicAttribute_Names_;
 };

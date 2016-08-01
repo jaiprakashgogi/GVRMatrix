@@ -37,10 +37,6 @@ public:
         Texture(new GLTexture(TARGET, texture_parameters)) {
     }
 
-    explicit BaseTexture(int textureid) :
-        Texture(new GLTexture(TARGET, textureid)) {
-    }
-
     void setJavaOwner(JNIEnv& env, jobject javaObject) {
         env.GetJavaVM(&javaVm_);
 

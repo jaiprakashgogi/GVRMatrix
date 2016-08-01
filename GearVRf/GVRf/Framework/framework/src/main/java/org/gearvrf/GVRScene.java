@@ -15,14 +15,22 @@
 
 package org.gearvrf;
 
+import android.os.Environment;
+
+import org.gearvrf.GVRCameraRigBase.GVRCameraRigType;
 import org.gearvrf.GVRRenderData.GVRRenderMaskBit;
 import org.gearvrf.debug.GVRConsole;
+import org.gearvrf.script.GVRScriptBehavior;
 import org.gearvrf.script.IScriptable;
 import org.gearvrf.utility.Log;
+import org.gearvrf.script.GVRScriptBehavior;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -60,7 +68,6 @@ public class GVRScene extends GVRHybridObject implements PrettyPrint, IScriptabl
     private GVRMaterial mShadowMaterial = null;
     private boolean mShadowMapDirty = true;
     private GVRSceneObject mSceneRoot;
-    
     /**
      * Constructs a scene with a camera rig holding left & right cameras in it.
      * 
@@ -80,7 +87,11 @@ public class GVRScene extends GVRHybridObject implements PrettyPrint, IScriptabl
         GVRPerspectiveCamera centerCamera = new GVRPerspectiveCamera(gvrContext);
         centerCamera.setRenderMask(GVRRenderMaskBit.Left | GVRRenderMaskBit.Right);
 
-        GVRCameraRig cameraRig = new GVRCameraRig(gvrContext);
+        GVRCameraRig cameraRig = GVRCameraRig.makeInstance(gvrContext);
+        final int cameraRigType = getCameraRigType(gvrContext);
+        if (-1 != cameraRigType) {
+            cameraRig.setCameraRigType(cameraRigType);
+        }
         cameraRig.attachLeftCamera(leftCamera);
         cameraRig.attachRightCamera(rightCamera);
         cameraRig.attachCenterCamera(centerCamera);
@@ -88,8 +99,7 @@ public class GVRScene extends GVRHybridObject implements PrettyPrint, IScriptabl
         addSceneObject(cameraRig.getOwnerObject());
 
         setMainCameraRig(cameraRig);
-        setFrustumCulling(true);
-
+        setFrustumCulling(true);      
         getEventReceiver().addListener(mSceneEventListener);
     }
 
@@ -99,7 +109,7 @@ public class GVRScene extends GVRHybridObject implements PrettyPrint, IScriptabl
         NativeScene.addSceneObject(getNative(), mSceneRoot.getNative());
         setFrustumCulling(true);
     }
-
+    
     /**
      * Add a {@linkplain GVRSceneObject scene object} as
      * a child of the scene root.
@@ -131,8 +141,16 @@ public class GVRScene extends GVRHybridObject implements PrettyPrint, IScriptabl
         GVRSceneObject head = rig.getOwnerObject();
         rig.removeAllChildren();
         head.getParent().removeChildObject(head);
+
+        for (GVRSceneObject child : mSceneRoot.getChildren()) {
+            child.getParent().removeChildObject(child);
+        }
+
         NativeScene.removeAllSceneObjects(getNative());
-        mLightList.clear();
+        synchronized (mLightList)
+        {
+            mLightList.clear();
+        }
         mSceneRoot = new GVRSceneObject(getGVRContext());
         mSceneRoot.addChildObject(head);
         NativeScene.addSceneObject(getNative(), mSceneRoot.getNative());
@@ -448,19 +466,22 @@ public class GVRScene extends GVRHybridObject implements PrettyPrint, IScriptabl
      * @see GVRScene.getLightList
      */
     private boolean addLight(GVRLightBase light) {
-        Integer lightIndex = mLightList.size();
-            
-        if (lightIndex >= MAX_LIGHTS)
+        synchronized (mLightList)
         {
-            Log.e(TAG, "Exceeded maximum number of lights");
-        	return false;
-        }
-        String name = "light" + lightIndex.toString();
-        if (NativeScene.addLight(getNative(), light.getNative()))
-        {
-        	mLightList.add(light);
-        	NativeLight.setLightID(light.getNative(), name);
-        	return true;
+            Integer lightIndex = mLightList.size();
+
+            if (lightIndex >= MAX_LIGHTS)
+            {
+                Log.e(TAG, "Exceeded maximum number of lights");
+                return false;
+            }
+            String name = "light" + lightIndex.toString();
+            if (NativeScene.addLight(getNative(), light.getNative()))
+            {
+                mLightList.add(light);
+                NativeLight.setLightID(light.getNative(), name);
+                return true;
+            }
         }
         return false;
     }
@@ -473,10 +494,14 @@ public class GVRScene extends GVRHybridObject implements PrettyPrint, IScriptabl
      * 
      * @return array of lights
      */
-    public GVRLightBase[] getLightList() {
-        GVRLightBase[] list = new GVRLightBase[mLightList.size()];
-        mLightList.toArray(list);
-        return list;
+    public GVRLightBase[] getLightList()
+    {
+        synchronized (mLightList)
+        {
+            GVRLightBase[] list = new GVRLightBase[mLightList.size()];
+            mLightList.toArray(list);
+            return list;
+        }
     }
     
     /**
@@ -574,7 +599,11 @@ public class GVRScene extends GVRHybridObject implements PrettyPrint, IScriptabl
         private void recursivelySendOnInit(GVRSceneObject sceneObject) {
             getGVRContext().getEventManager().sendEvent(
                     sceneObject, ISceneObjectEvents.class, "onInit", getGVRContext(), sceneObject);
-
+            GVRScriptBehavior script = (GVRScriptBehavior) sceneObject.getComponent(GVRScriptBehavior.getComponentType());
+            if (script != null) {
+                getGVRContext().getEventManager().sendEvent(
+                        script, ISceneEvents.class, "onInit", getGVRContext(), GVRScene.this);
+            }
             for (GVRSceneObject child : sceneObject.rawGetChildren()) {
                 recursivelySendOnInit(child);
             }
@@ -601,6 +630,45 @@ public class GVRScene extends GVRHybridObject implements PrettyPrint, IScriptabl
             }
         }
     };
+
+    private static int getCameraRigType(final GVRContext gvrContext) {
+        int cameraRigType = -1;
+        try {
+            final File dir = new File(Environment.getExternalStorageDirectory(),
+                    gvrContext.getContext().getPackageName());
+            if (dir.exists()) {
+                final File config = new File(dir, ".gvrf");
+                if (config.exists()) {
+                    final FileInputStream fis = new FileInputStream(config);
+                    try {
+                        final Properties p = new Properties();
+                        p.load(fis);
+                        fis.close();
+
+                        final String property = p.getProperty("cameraRigType");
+                        if (null != property) {
+                            final int value = Integer.parseInt(property);
+                            switch (value) {
+                                case GVRCameraRigType.Free.ID:
+                                case GVRCameraRigType.YawOnly.ID:
+                                case GVRCameraRigType.RollFreeze.ID:
+                                case GVRCameraRigType.Freeze.ID:
+                                case GVRCameraRigType.OrbitPivot.ID:
+                                    cameraRigType = value;
+                                    Log.w(TAG, "camera rig type override specified in config file; using type "
+                                            + cameraRigType);
+                                    break;
+                            }
+                        }
+                    } finally {
+                        fis.close();
+                    }
+                }
+            }
+        } catch (final Exception e) {
+        }
+        return cameraRigType;
+    }
 }
 
 class NativeScene {
