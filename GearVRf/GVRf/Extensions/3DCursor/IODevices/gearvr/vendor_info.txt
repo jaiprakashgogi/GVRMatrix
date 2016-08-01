@@ -1,8 +1,0 @@
-Devices:
-
-1) vendorName="Samsung"
-   vendorId="1256"
-   productId="42240"
-   deviceId="gearvr"
-   name="Gear VR"
-

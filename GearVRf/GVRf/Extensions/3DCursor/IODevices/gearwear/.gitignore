@@ -1,8 +1,0 @@
-# Tizen IDE files
-.rds_delta
-.sdk_delta.info
-.settings
-.sign
-
-*.wgt
-
