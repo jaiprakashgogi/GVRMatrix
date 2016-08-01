@@ -59,10 +59,10 @@ public class SampleMain extends GVRScript {
         sceneObject.getTransform().setPosition(0.0f, 0.0f, -3.0f);
 
         // add the scene object to the scene graph
-        scene.addSceneObject(sceneObject);
+     //s   scene.addSceneObject(sceneObject);
 
-        GVRTexSceneObject myTex = new GVRTexSceneObject(gvrContext, 1, 1);
-        myTex.getTransform().setPosition(0, 0, -3.f);
+        GVRTexSceneObject myTex = new GVRTexSceneObject(gvrContext, 4, 2);
+        myTex.getTransform().setPosition(0,0, -3.f);
         scene.addSceneObject(myTex);
 
         // gvrContext.registerOnDrawFrameListener(new myDrawFrameListener());

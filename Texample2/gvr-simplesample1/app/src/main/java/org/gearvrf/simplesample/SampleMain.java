@@ -44,6 +44,7 @@ public class SampleMain extends GVRScript {
 	private PianoKeys pianoKeys;
     private static final float CUBE_WIDTH = 20.0f;
     private static final float SCALE_FACTOR = 2.0f;
+    GVRSceneObject sceneObject;
 
     @Override
     public void onInit(GVRContext gvrContext) {
@@ -88,7 +89,7 @@ public class SampleMain extends GVRScript {
             GVRMesh mesh = gvrContext.loadMesh(new GVRAndroidResource(mGVRContext.getContext(), "shield.obj"));
             GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(
                     mGVRContext.getContext(), "shield.jpg"));
-            GVRSceneObject sceneObject = new GVRSceneObject(gvrContext, mesh,
+            sceneObject = new GVRSceneObject(gvrContext, mesh,
                     texture);
             sceneObject.getTransform().setPosition(0.0f, 0.0f, -3.0f);
             sceneObject.getTransform().setScale(0.5f, 0.5f, 0.5f);
@@ -151,11 +152,24 @@ public class SampleMain extends GVRScript {
 
 
     public void onTap() {
+
+        Client myClient = new Client(this, "172.28.4.134", 8080);
+        myClient.execute();
+
+
        Random r = new Random();
        int low = 0;
        int high = 8;
        int Result = r.nextInt(high-low) + low;
-       pianoKeys.playMusic(Result);
+        execute(Result);
+    }
+
+    public void execute(int result) {
+
+        if(result > 0 && result <= 7) {
+            pianoKeys.playMusic(result);
+            sceneObject.getTransform().setPosition(-1 + (result - 1) * 3 / 6, 0, -3.f);
+        }
     }
 }
 

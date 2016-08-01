@@ -107,7 +107,7 @@ public class GVRTexSceneObject extends GVRSceneObject implements GVRDrawFrameLis
             GLES20.glClear(clearMask);
             Matrix.multiplyMM(mVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
             // TEST: render the entire font texture
-            glText.drawTexture( width/2, height/2, mVPMatrix);            // Draw the Entire Texture
+      //      glText.drawTexture( width/2, height/2, mVPMatrix);            // Draw the Entire Texture
             glText.begin( 0.0f, 1.0f, 0.0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color BLUE)
             rain.update();
             glText.end();                                   // End Text Rendering
