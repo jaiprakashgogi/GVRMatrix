@@ -29,6 +29,9 @@ extern "C" {
     JNIEXPORT jlong JNICALL
     Java_org_gearvrf_NativeBaseTexture_bareConstructor(JNIEnv * env, jobject obj, jintArray jtexture_parameters);
 
+    JNIEXPORT jlong JNICALL
+    Java_org_gearvrf_NativeBaseTexture_bareConstructorId(JNIEnv * env, jobject obj, jint textureid);
+
     JNIEXPORT void JNICALL
     Java_org_gearvrf_NativeBaseTexture_setJavaOwner(JNIEnv * env, jobject obj, jlong jtexture, jobject owner);
 
@@ -42,6 +45,12 @@ Java_org_gearvrf_NativeBaseTexture_bareConstructor(JNIEnv * env, jobject obj, ji
     jint* texture_parameters = env->GetIntArrayElements(jtexture_parameters,0);
     jlong result =  reinterpret_cast<jlong>(new BaseTexture(texture_parameters));
     env->ReleaseIntArrayElements(jtexture_parameters, texture_parameters, 0);
+    return result;
+}
+
+JNIEXPORT jlong JNICALL
+Java_org_gearvrf_NativeBaseTexture_bareConstructorId(JNIEnv * env, jobject obj, jint textureid) {
+    jlong result =  reinterpret_cast<jlong>(new BaseTexture(textureid));
     return result;
 }
 

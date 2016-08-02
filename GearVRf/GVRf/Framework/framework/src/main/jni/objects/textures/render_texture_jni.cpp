@@ -44,6 +44,9 @@ Java_org_gearvrf_NativeRenderTexture_endRendering(JNIEnv * env, jobject obj,
 JNIEXPORT bool JNICALL
 Java_org_gearvrf_NativeRenderTexture_readRenderResult(JNIEnv * env, jobject obj,
         jlong ptr, jintArray jreadback_buffer);
+JNIEXPORT void JNICALL
+Java_org_gearvrf_NativeRenderTexture_bind(JNIEnv * env, jobject obj,
+        jlong ptr);
 }
 ;
 
@@ -51,6 +54,14 @@ JNIEXPORT jlong JNICALL
 Java_org_gearvrf_NativeRenderTexture_ctor(JNIEnv * env, jobject obj, jint width,
         jint height) {
     return reinterpret_cast<jlong>(new RenderTexture(width, height));
+}
+
+JNIEXPORT void JNICALL
+Java_org_gearvrf_NativeRenderTexture_bind(JNIEnv * env, jobject obj,
+        jlong ptr) {
+        RenderTexture* render_texture = reinterpret_cast<RenderTexture*>(ptr);
+        render_texture->bind();
+        return;
 }
 
 JNIEXPORT jlong JNICALL

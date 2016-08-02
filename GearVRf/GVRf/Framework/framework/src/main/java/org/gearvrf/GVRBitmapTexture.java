@@ -44,6 +44,11 @@ public class GVRBitmapTexture extends GVRTexture {
         this(gvrContext, bitmap, gvrContext.DEFAULT_TEXTURE_PARAMETERS);
     }
 
+    public GVRBitmapTexture(GVRContext gvrContext, int textureid) {
+        super(gvrContext, NativeBaseTexture.bareConstructorId(textureid));
+        NativeBaseTexture.setJavaOwner(getNative(), this);
+    }
+
     /**
      * Constructs a texture using a pre-existing {@link Bitmap} and the user
      * defined filters {@link GVRTextureParameters}.
@@ -341,6 +346,7 @@ public class GVRBitmapTexture extends GVRTexture {
 
 final class NativeBaseTexture {
     static native long bareConstructor(int[] textureParameterValues);
+    static native long bareConstructorId(int textureid);
     static native void setJavaOwner(long pointer, GVRTexture owner);
 
     static native boolean update(long pointer, int width, int height,

@@ -87,6 +87,10 @@ public class GVRRenderTexture extends GVRTexture {
         return NativeRenderTexture.readRenderResult(getNative(), readbackBuffer);
     }
 
+    public void bind() {
+        NativeRenderTexture.bind(getNative());
+    }
+
     private int mWidth, mHeight;
 }
 
@@ -96,4 +100,6 @@ class NativeRenderTexture {
     static native long ctorMSAA(int width, int height, int sampleCount);
 
     static native boolean readRenderResult(long ptr, int[] readbackBuffer);
+
+    static native void bind(long ptr);
 }

@@ -60,6 +60,10 @@ public:
         return TARGET;
     }
 
+    void bind() {
+        glBindFramebuffer(GL_FRAMEBUFFER, gl_frame_buffer_->id());
+    }
+
     GLuint getFrameBufferId() const {
         return gl_frame_buffer_->id();
     }
