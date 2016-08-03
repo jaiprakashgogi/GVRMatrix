@@ -48,23 +48,6 @@ public class GVRTexSceneObject extends GVRSceneObject implements GVRDrawFrameLis
         gvrContext = _gvrContext;
         gvrContext.registerDrawFrameListener(this);
 
-
-//        GVRTexture texture = new GVRExternalTexture(gvrContext);
-//        GVRMaterial material = new GVRMaterial(gvrContext, GVRMaterial.GVRShaderType.OES.ID);
-//        material.setMainTexture(texture);
-//        getRenderData().setMaterial(material);
-//
-//        this.gvrContext = gvrContext;
-//        width = height = 1024;
-//        mSurfaceTexture = new SurfaceTexture(texture.getId());
-//        mSurface = new Surface(mSurfaceTexture);
-//        mSurfaceTexture.setDefaultBufferSize(width, height);
-//        mPixelBuffer = new PixelBuffer(width, height);
-//        mTexample2Renderer =  new Texample2Renderer(gvrContext.getContext());
-//        mPixelBuffer.setRenderer(mTexample2Renderer);
- //       GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(
- //               gvrContext, R.drawable.gearvr_logo));
-
         mRenderTexture = new GVRRenderTexture(gvrContext, 1024, 1024);
         int myrendertextureid = mRenderTexture.getId();
         Log.e("RC", "texture id is "+ myrendertextureid);
@@ -89,10 +72,6 @@ public class GVRTexSceneObject extends GVRSceneObject implements GVRDrawFrameLis
         else {
             Matrix.frustumM(mProjMatrix, 0, -1, 1, -1/ratio, 1/ratio, 1, 10);
         }
-
-        // Save width and height
-        this.width = width;                             // Save Current Width
-        this.height = height;                           // Save Current Height
 
         int useForOrtho = Math.min(width, height);
 
@@ -168,30 +147,14 @@ public class GVRTexSceneObject extends GVRSceneObject implements GVRDrawFrameLis
         GLES20.glGetIntegerv(GLES20.GL_FRAMEBUFFER_BINDING, old, 0);
         mRenderTexture.bind();
 
-        GLES20.glClearColor(0,0,0,1);
-        status++;
-        if(status > 99) {
-            status = 0;
-        }
-
+        //GLES20.glClearColor(0,0,0,1);
         int clearMask = GLES20.GL_COLOR_BUFFER_BIT;
         GLES20.glClear(clearMask);
         Matrix.multiplyMM(mVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
-        if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-            Log.e("RC","Jai is dead 1");
-        else
-            Log.e("RC","jai wont die 1");
-
         glText.drawTexture( width/2, height/2, mVPMatrix);            // Draw the Entire Texture
-
         glText.begin( 0.0f, 1.0f, 0.0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color BLUE)
         rain.update();
         glText.end();                                   // End Text Rendering
-
-        if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-            Log.e("RC","Jai is dead");
-        else
-        Log.e("RC","jai wont die");
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, old[0]);
     }
 }

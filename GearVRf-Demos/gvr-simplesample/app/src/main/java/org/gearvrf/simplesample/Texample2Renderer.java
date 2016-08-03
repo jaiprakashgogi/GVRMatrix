@@ -11,7 +11,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class Texample2Renderer implements GLSurfaceView.Renderer  {
 
 	private static final String TAG = "TexampleRenderer";
-	GLText glText;                             // A GLText Instance
+	private GLText glText;                             // A GLText Instance
 	private Context context;                           // Context (from Activity)
 
 	int width = 720;                           // Updated to the Current Width + Height in onSurfaceChanged()
@@ -20,7 +20,7 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 	private float[] mVMatrix = new float[16];
 	private float[] mVPMatrix = new float[16];
 	private float pos = 0.f;
-	Rain rain;
+	private Rain rain;
 	int CHAR_HEIGHT = 28;
 	int CHAR_PAD = 4;
 
@@ -56,7 +56,7 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 		
 		
 		// TEST: render the entire font texture
-		//glText.drawTexture( width/2, height/2, mVPMatrix);            // Draw the Entire Texture
+		glText.drawTexture( width/2, height/2, mVPMatrix);            // Draw the Entire Texture	
 		glText.begin( 0.0f, 1.0f, 0.0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color BLUE)
 		rain.update();
 		glText.end();                                   // End Text Rendering

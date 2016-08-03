@@ -13,7 +13,7 @@ public class Character {
 		y = y2;
 		glText = _glText;
 		c = _c;
-		Log.i("Character", "Char is: " + c + ":" + x + "x" + y);
+		//Log.i("Character", "Char is: " + c + ":" + x + "x" + y);
 	}
 
 	public void update() {

@@ -302,8 +302,7 @@ public class GLText {
 
 	void initDraw(float red, float green, float blue, float alpha) {
 		GLES20.glUseProgram(mProgram.getHandle()); // specify the program to use
-		if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-			Log.e("RC", "init 1");
+
 		// set color TODO: only alpha component works, text is always black #BUG
 		float[] color = { red, green, blue, alpha };
 		GLES20.glUniform4fv(mColorHandle, 1, color, 0);
@@ -319,8 +318,6 @@ public class GLText {
 		// Tell the texture uniform sampler to use this texture in the shader by
 		// binding to texture unit 0
 		GLES20.glUniform1i(mTextureUniformHandle, 0);
-		if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-			Log.e("RC", "init 2");
 	}
 
 	public void end() {

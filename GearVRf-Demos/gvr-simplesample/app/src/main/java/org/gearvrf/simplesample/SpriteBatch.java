@@ -65,26 +65,11 @@ public class SpriteBatch {
 		if ( numSprites > 0 )  {                        // IF Any Sprites to Render
 			// bind MVP matrices array to shader
 			GLES20.glUniformMatrix4fv(mMVPMatricesHandle, numSprites, false, uMVPMatrices, 0);
-			if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-				Log.e("RC", "glUniformMatrix4fv");
 			//GLES20.glEnableVertexAttribArray(mMVPMatricesHandle);
-			if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-				Log.e("RC", "glUniformMatrix4fv");
 			vertices.setVertices( vertexBuffer, 0, bufferIndex);  // Set Vertices from Buffer
-			if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-				Log.e("RC", "setVertices1");
-			vertices.bind();
-			if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-				Log.e("RC", "bind");
-			// Bind Vertices
+			vertices.bind();                             // Bind Vertices
 			vertices.draw( GLES20.GL_TRIANGLES, 0, numSprites * INDICES_PER_SPRITE );  // Render Batched Sprites
-			if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-				Log.e("RC", "draw");
-			vertices.unbind();
-			if(GLES20.glGetError()!=GLES20.GL_NO_ERROR)
-				Log.e("RC", "unbind");
-			Log.e("RC", "end");
-			// Unbind Vertices
+			vertices.unbind();                           // Unbind Vertices
 		}
 	}
 
@@ -136,7 +121,6 @@ public class SpriteBatch {
 		vertexBuffer[bufferIndex++] = region.u1;        // Add U for Vertex 3
 		vertexBuffer[bufferIndex++] = region.v1;        // Add V for Vertex 3
 		vertexBuffer[bufferIndex++] = numSprites;
-
 
 		// add the sprite mvp matrix to uMVPMatrices array
 		
